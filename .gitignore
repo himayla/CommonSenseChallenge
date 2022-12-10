@@ -2,4 +2,5 @@ common-sense/
 __pycache__/
 .DS_Store
 **/.DS_Store
-distilbert-base-uncased-finetuned/
+results/
+results.zip
