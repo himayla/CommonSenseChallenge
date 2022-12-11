@@ -1,14 +1,13 @@
-import pandas as pd
 from datasets import Dataset
-from transformers import AutoTokenizer
-from transformers import AutoModelForMultipleChoice, TrainingArguments, Trainer
+import torch
+from transformers import AutoTokenizer, AutoModelForMultipleChoice, TrainingArguments, Trainer
 from transformers.tokenization_utils_base import PaddingStrategy
 from typing import Optional, Union
-import torch
 import numpy as np
+import pandas as pd
 
 MODEL_NAME = "bert-base-uncased"
-CHECKPOINT = "checkpoint-500"
+CHECKPOINT = "checkpoint-1000"
 
 options = ['OptionA', 'OptionB', 'OptionC']
 
@@ -16,8 +15,8 @@ tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
 class DataCollatorForMultipleChoice:
     """
-    Data collator that will dynamically pad the inputs for multiple choice received.
-    Flattens all model inputs, apply padding, unflatten results.
+        Data collator that will dynamically pad the inputs for multiple choice received.
+        Flattens all model inputs, apply padding, unflatten results.
     """
     padding: Union[bool, str, PaddingStrategy] = True
     max_length: Optional[int] = None
@@ -49,8 +48,8 @@ def load_data(sentences, labels):
     """
         Load and merge sentences, labels convert to Huggingface DatasetDict
     """
-    df_sentences = pd.read_csv(sentences)
-    df_labels = pd.read_csv(labels)
+    df_sentences = pd.read_csv(sentences)[:5]
+    df_labels = pd.read_csv(labels)[:5]
 
     # Combine sentences and labels dataframes
     df = pd.merge(df_sentences, df_labels, on="id")
@@ -86,7 +85,7 @@ def preprocess_function(examples: Dataset):
 
 def compute_metrics(eval_predictions):
     """
-    Compute metrics from the predictions.
+        Compute metrics from the predictions.
     """
     predictions, label_ids = eval_predictions
     preds = np.argmax(predictions, axis=1)
@@ -94,17 +93,17 @@ def compute_metrics(eval_predictions):
 
 if __name__ == "__main__":
     
-    sentences = "common-sense/train_data.csv"
-    labels = "common-sense/train_answers.csv"
+    sentences = "../../common-sense/train_data.csv"
+    labels = "../../common-sense/train_answers.csv"
 
     data = load_data(sentences, labels)
 
     tokenized = data.map(preprocess_function, batched=True)
 
-    model = AutoModelForMultipleChoice.from_pretrained(f"results/{MODEL_NAME}/{CHECKPOINT}")
+    model = AutoModelForMultipleChoice.from_pretrained(f"{MODEL_NAME}/{CHECKPOINT}")
 
     training_args = TrainingArguments(
-        output_dir = f"./results/{MODEL_NAME}",
+        output_dir = f"{MODEL_NAME}",
         evaluation_strategy = "epoch",
         learning_rate = 5e-5,
         per_device_train_batch_size = 16,

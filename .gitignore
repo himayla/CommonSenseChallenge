@@ -2,5 +2,6 @@ common-sense/
 __pycache__/
 .DS_Store
 **/.DS_Store
-results/
+bert-base-uncased/
+albert-base-v2/
 results.zip
