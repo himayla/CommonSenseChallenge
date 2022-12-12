@@ -48,8 +48,8 @@ def load_data(sentences, labels):
     """
         Load and merge sentences, labels convert to Huggingface DatasetDict
     """
-    df_sentences = pd.read_csv(sentences)[:5]
-    df_labels = pd.read_csv(labels)[:5]
+    df_sentences = pd.read_csv(sentences)
+    df_labels = pd.read_csv(labels)
 
     # Combine sentences and labels dataframes
     df = pd.merge(df_sentences, df_labels, on="id")
@@ -100,10 +100,10 @@ if __name__ == "__main__":
 
     tokenized = data.map(preprocess_function, batched=True)
 
-    model = AutoModelForMultipleChoice.from_pretrained(f"{MODEL_NAME}/{CHECKPOINT}")
+    model = AutoModelForMultipleChoice.from_pretrained(f"../results/{MODEL_NAME}/{CHECKPOINT}")
 
     training_args = TrainingArguments(
-        output_dir = f"{MODEL_NAME}",
+        output_dir = f"../results/{MODEL_NAME}",
         evaluation_strategy = "epoch",
         learning_rate = 5e-5,
         per_device_train_batch_size = 16,
