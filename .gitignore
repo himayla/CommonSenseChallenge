@@ -4,4 +4,5 @@ __pycache__/
 **/.DS_Store
 bert-base-uncased/
 albert-base-v2/
+results/*
 results.zip
